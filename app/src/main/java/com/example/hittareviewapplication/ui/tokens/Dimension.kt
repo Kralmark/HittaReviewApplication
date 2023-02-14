@@ -15,14 +15,16 @@ interface Dimension {
         _16(16),
         _24(24),
         _32(32),
-        _48(48),
-        _64(64)
+        _80(80),
+        _96(96)
     }
 
     enum class Size(val value: Dp) {
         _8(IntValue._8.value.dp),
         _16(IntValue._16.value.dp),
         _32(IntValue._32.value.dp),
+        _80(IntValue._80.value.dp),
+
     }
 
     enum class Padding(val value: Dp) {
@@ -31,6 +33,9 @@ interface Dimension {
         _4(IntValue._4.value.dp),
         _8(IntValue._8.value.dp),
         _16(IntValue._16.value.dp),
+        _24(IntValue._24.value.dp),
+        _32(IntValue._32.value.dp),
+        _96(IntValue._96.value.dp),
     }
 
 }

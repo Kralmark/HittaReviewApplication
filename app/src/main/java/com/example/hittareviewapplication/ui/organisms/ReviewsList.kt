@@ -2,6 +2,8 @@ package com.example.hittareviewapplication.ui.organisms
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.hittareviewapplication.ui.atoms.Divider
 import com.example.hittareviewapplication.ui.templates.ReviewsTemplate
@@ -24,5 +26,5 @@ fun ReviewsList(list: List<ReviewsTemplate.Review>?) {
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    ReviewsList(list = ReviewsTemplate.createMockModel().reviews)
+    ReviewsList(list = ReviewsTemplate.createMockModel(remember { mutableStateOf(0) }).reviews)
 }

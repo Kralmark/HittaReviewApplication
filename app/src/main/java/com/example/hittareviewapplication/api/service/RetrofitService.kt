@@ -1,6 +1,7 @@
 package com.example.hittareviewapplication.api.service
 
 import android.util.Log
+import com.example.hittareviewapplication.MainActivity
 import com.example.hittareviewapplication.api.models.CompanyInfoResponseDTO
 import com.example.hittareviewapplication.api.models.ReviewDTO
 import retrofit2.Call
@@ -48,7 +49,7 @@ class RetrofitServiceImpl {
     /**
      * Post a review to the end point.
      */
-    fun postReview(review: ReviewDTO) {
+    fun postReview(review: ReviewDTO, success: () -> Unit, failure: () -> Unit) {
         val service = retrofitPostConfig.create(RetrofitService::class.java)
 
         service.postReview(review).enqueue(object : Callback<Unit> {
@@ -62,8 +63,10 @@ class RetrofitServiceImpl {
             ) {
                 if (response.isSuccessful) {
                     Log.d(className, "Successfully posted, " + response.body())
+                    success()
                 } else {
                     Log.e(className, "Failed to post review, " + response.errorBody())
+                    failure()
                 }
 
             }
@@ -83,6 +86,7 @@ class RetrofitServiceImpl {
                 if (response.isSuccessful) {
                     val displayName = response.body()?.result?.companies?.company?.get(0)?.displayName
                     Log.d(className, displayName.toString())
+                    MainActivity.model!!.companyName = displayName
                 }
             }
 

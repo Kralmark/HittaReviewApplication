@@ -2,7 +2,7 @@ package com.example.hittareviewapplication.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val BrightBlue = Color(0xF039BEF)
+val BrightBlue = Color(0xF039BEF0)
 
 
 val Purple80 = Color(0xFFD0BCFF)

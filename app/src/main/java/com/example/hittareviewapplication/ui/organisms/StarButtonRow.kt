@@ -1,5 +1,6 @@
 package com.example.hittareviewapplication.ui.organisms
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.hittareviewapplication.R
@@ -10,16 +11,16 @@ import com.example.hittareviewapplication.ui.tokens.Dimension.*
 
 class StarButtonRow {
     data class Model(
-        var nbrSelected: Int = 0,
         val nbrStars: Int = 5,
         val iconSize: Size = Size._32,
         val iconPadding: Padding = Padding._8,
         val selectedIconRes: Int,
         val unselectedIconRes: Int,
+        var rating: MutableState<Int>,
         val isSelectable: Boolean = false,
-        var rating: MutableState<Int>)
+        val arrangement: Arrangement.Horizontal = Arrangement.Start
+    )
 }
-
 
 /**
  * A component showing a row of stars (default is five stars).
@@ -27,10 +28,11 @@ class StarButtonRow {
 @Composable
 fun StarButtonRow(model: StarButtonRow.Model) {
 
-    // Set rating from model
-    model.rating.value = model.nbrSelected
-    IconButtonRow(model = IconButtonRow.Model(
-        iconButtons = List(model.nbrStars) { index ->
+    // Render a row of star icons and set the rating from the modelmodel
+    IconButtonRow(
+        model = IconButtonRow.Model(
+            arrangement = model.arrangement,
+            iconButtons = List(model.nbrStars) { index ->
             val isSelected = model.rating.value > index
             val iconProps = Icon.Props(
                 resId = if(isSelected) model.selectedIconRes else model.unselectedIconRes,
@@ -39,13 +41,16 @@ fun StarButtonRow(model: StarButtonRow.Model) {
                 tintResId = getTintResourceId(isSelected)
             )
 
-            IconButton.Model(iconProps = iconProps,
+            IconButton.Model(
+                iconProps = iconProps,
                 onClick = {
                     if(model.isSelectable) {
                         model.rating.value = index + 1
-                        model.nbrSelected = model.rating.value
-                        iconProps.tintResId = getTintResourceId(
-                            isSelected = model.rating.value > index)
+                        if (model.rating.value > 0) {
+                            iconProps.tintResId = getTintResourceId(
+                                isSelected = model.rating.value > index
+                            )
+                        }
                     }
                 }
             )
@@ -63,14 +68,9 @@ fun getTintResourceId(isSelected: Boolean): Int {
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    val nbrStars = 5
-    val nbrSelected =  remember { mutableStateOf(0) }
-
     StarButtonRow(model = StarButtonRow.Model(
-        nbrSelected = nbrSelected.value,
-        nbrStars = nbrStars,
         selectedIconRes = R.drawable.ic_five_pointed_star_filled,
         unselectedIconRes = R.drawable.ic_five_pointed_star_filled,
-        rating = remember { mutableStateOf(4) }))
-    nbrSelected.value = 4
+        rating = remember { mutableStateOf(0) }
+    ))
 }

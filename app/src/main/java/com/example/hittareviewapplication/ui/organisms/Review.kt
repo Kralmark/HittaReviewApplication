@@ -9,10 +9,11 @@ import androidx.compose.ui.Modifier
 import com.example.hittareviewapplication.R
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.hittareviewapplication.ui.atoms.Header
+import com.example.hittareviewapplication.ui.atoms.HeaderBase
+import com.example.hittareviewapplication.ui.atoms.HeaderType
 import com.example.hittareviewapplication.ui.molecules.UserIcon
 import com.example.hittareviewapplication.ui.templates.ReviewsTemplate
 import com.example.hittareviewapplication.ui.tokens.Dimension.*
-import com.example.hittareviewapplication.ui.types.HeaderType
 
 /**
  * A review post containing icon, name, stars and a body text.
@@ -32,7 +33,7 @@ fun Review(review: ReviewsTemplate.Review) {
         // Render name, stars and comment
         Column {
             Header(
-                props = Header.Props(
+                props = HeaderBase.Props(
                     type = HeaderType._2,
                     text = review.userName
                 )
@@ -40,13 +41,11 @@ fun Review(review: ReviewsTemplate.Review) {
             Row {
                 StarButtonRow(
                     model = StarButtonRow.Model(
-                        nbrSelected = 4,
-                        nbrStars = 5,
                         iconSize = Size._8,
                         iconPadding = Padding._1,
                         unselectedIconRes = R.drawable.ic_five_pointed_star_outline,
                         selectedIconRes = R.drawable.ic_five_pointed_star_filled,
-                        rating = remember { mutableStateOf(5) }
+                        rating = remember { mutableStateOf(4) }
                     )
                 )
                 /*Text(
@@ -61,5 +60,5 @@ fun Review(review: ReviewsTemplate.Review) {
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    Review(review = ReviewsTemplate.createMockModel().reviews[0])
+    Review(review = ReviewsTemplate.createMockModel(remember { mutableStateOf(0) }).reviews[0])
 }

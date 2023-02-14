@@ -13,7 +13,7 @@ import com.example.hittareviewapplication.ui.tokens.Dimension.*
 class IconButton {
     data class Model(
         val iconProps: Icon.Props,
-        val onClick: () -> Unit
+        val onClick: () -> Unit,
     )
 }
 
