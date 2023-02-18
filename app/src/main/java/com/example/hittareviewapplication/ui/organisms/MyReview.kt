@@ -3,10 +3,7 @@ package com.example.hittareviewapplication.ui.organisms
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.hittareviewapplication.MainActivity
@@ -16,7 +13,6 @@ import com.example.hittareviewapplication.ui.atoms.HeaderBase
 import com.example.hittareviewapplication.ui.atoms.HeaderType
 import com.example.hittareviewapplication.ui.molecules.UserIcon
 import com.example.hittareviewapplication.ui.templates.ReviewsTemplate
-import com.example.hittareviewapplication.ui.tokens.Dimension
 import com.example.hittareviewapplication.ui.tokens.Dimension.*
 
 class MyReview
@@ -24,7 +20,8 @@ class MyReview
     data class Model(
         val iconRes: Int,
         val ratingState: MutableState<Int>,
-        val onClick: () -> Unit)
+        val onClick: (value: Int) -> Unit
+    )
 }
 /**
  * Review coming from "me" (the actual user) with icon and clickable stars.
@@ -44,12 +41,12 @@ fun MyReview(model: MyReview.Model) {
 @Composable
 fun RenderMyReview(model: MyReview.Model) {
     Review(ReviewsTemplate.Review(
-        userName = MainActivity.model!!.userNameState.value,
-        score = MainActivity.model!!.ratingState.value,
-        comment = MainActivity.model!!.commentState.value,
+        userName = MainActivity.applicationState!!.userNameState.value,
+        score = MainActivity.applicationState!!.ratingState.value,
+        comment = MainActivity.applicationState!!.commentState.value,
         isMyReview = true,
         userIcon = model.iconRes,
-        date = MainActivity.model!!.timestampState.value
+        date = MainActivity.applicationState!!.timestampState.value
     ))
 }
 
@@ -90,7 +87,8 @@ fun RateAndReview(model: MyReview.Model) {
                         unselectedIconRes = R.drawable.ic_five_pointed_star_outline,
                         rating = model.ratingState,
                         isSelectable = true,
-                        arrangement = Arrangement.SpaceBetween
+                        arrangement = Arrangement.SpaceBetween,
+                        onClick = { model.onClick(it)},
                     )
                 )
             }
@@ -101,9 +99,11 @@ fun RateAndReview(model: MyReview.Model) {
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    MyReview(model = MyReview.Model(
-        iconRes = R.drawable.ic_user_icon,
-        ratingState = remember { mutableStateOf(3) },
-        onClick = { Log.d(MyReview::class.toString(), "Clicked") }
-    ))
+    MyReview(
+        model = MyReview.Model(
+            iconRes = R.drawable.ic_user_icon,
+            ratingState = remember { mutableStateOf(3) },
+            onClick = { },
+        )
+    )
 }

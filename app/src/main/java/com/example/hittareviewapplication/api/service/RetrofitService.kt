@@ -76,7 +76,9 @@ class RetrofitServiceImpl {
     /**
      * Get the company name from an end point using an identifier as parameter.
      */
-    fun getCompanyName(id: String) {
+    fun getCompanyName(id: String,
+                       onSuccess: (displayName: String) -> Unit,
+                       onFailure: (errorMessage: String) -> Unit) {
         val service = retrofitGetConfig.create(RetrofitService::class.java)
         service.getCompanyInfo(id)?.enqueue(object : Callback<CompanyInfoResponseDTO?> {
             override fun onResponse(
@@ -84,15 +86,15 @@ class RetrofitServiceImpl {
                 response: Response<CompanyInfoResponseDTO?>
             ) {
                 if (response.isSuccessful) {
-                    val displayName = response.body()?.result?.companies?.company?.get(0)?.displayName
-                    Log.d(className, displayName.toString())
-                    MainActivity.model!!.companyName = displayName
+                    val displayName = response.body()?.result?.companies?.company?.get(0)?.displayName ?: ""
+                    onSuccess(displayName)
                 }
             }
 
             override fun onFailure(call: Call<CompanyInfoResponseDTO?>, t: Throwable) {
                 Log.e(className, "failure: $t")
                 Log.e(className, "failure: $call")
+                onFailure(t.message.toString())
             }
         })
     }

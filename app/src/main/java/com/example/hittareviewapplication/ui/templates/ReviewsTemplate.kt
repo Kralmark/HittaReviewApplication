@@ -24,7 +24,7 @@ class ReviewsTemplate {
         val reviewScore: ReviewScore.Model,
         val iconRes: Int,
         val header: String,
-        val onClick: () -> Unit,
+        val onClick: (value: Int) -> Unit,
         val reviews: List<Review>,
         val ratingState: MutableState<Int>
     )
@@ -72,20 +72,24 @@ fun ReviewsTemplate(model: ReviewsTemplate.Model) {
 
         Divider()
 
-        MyReview(model = MyReview.Model(
-            iconRes = model.iconRes,
-            onClick = model.onClick,
-            ratingState = model.ratingState)
+        MyReview(
+            model = MyReview.Model(
+                iconRes = model.iconRes,
+                onClick = { model.onClick(it) },
+                ratingState = model.ratingState
+            )
         )
 
         Divider()
 
         ReviewsList(list = model.reviews)
 
-        Text(model = TextRenderable.Model(
-            text = MainActivity.link,
-            textAlign = TextAlign.Center
-        ))
+        Text(
+            model = TextRenderable.Model(
+                text = MainActivity.link,
+                textAlign = TextAlign.Center
+            )
+        )
     }
 }
 

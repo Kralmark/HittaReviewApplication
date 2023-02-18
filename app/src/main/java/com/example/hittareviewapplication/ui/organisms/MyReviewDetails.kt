@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -14,18 +15,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.hittareviewapplication.MainActivity
 import com.example.hittareviewapplication.R
 import com.example.hittareviewapplication.ui.atoms.Divider
 import com.example.hittareviewapplication.ui.tokens.Dimension.*
-
+class MyReviewDetails {
+    data class Model(
+        val ratingState: MutableState<Int>,
+        val userNameState: MutableState<String>,
+        val commentState: MutableState<String>
+    )
+}
 /**
  * Review coming from "me" (the actual user) with clickable stars, a descriptive text,
  * "my" name and "my" comment.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyReviewDetails(model: MainActivity.Model) {
+fun MyReviewDetails(model: MyReviewDetails.Model) {
 
     // All content on one row with some vertical padding.
     Column(modifier = Modifier
@@ -35,12 +41,15 @@ fun MyReviewDetails(model: MainActivity.Model) {
 
         // Column containing stars, stars comment, "my" name and editable text details
         Column {
-            StarButtonRow(model = StarButtonRow.Model(
+            StarButtonRow(
+                model = StarButtonRow.Model(
                 selectedIconRes = R.drawable.ic_five_pointed_star_filled,
                 unselectedIconRes = R.drawable.ic_five_pointed_star_outline,
                 rating = model.ratingState,
                 isSelectable = true,
-                arrangement = Arrangement.Center))
+                arrangement = Arrangement.Center,
+                onClick = { },
+            ))
 
             // Describing text based on star rating
             Text(
@@ -57,7 +66,7 @@ fun MyReviewDetails(model: MainActivity.Model) {
                 textStyle = TextStyle(color = MaterialTheme.colorScheme.secondary),
                 enabled = true,
                 onValueChange = {model.userNameState.value = it},
-                label = {Text("Your name")},
+                label = { Text("Your name") },
                 modifier = Modifier
                     .background(Color.White)
                     .fillMaxWidth())
@@ -70,7 +79,7 @@ fun MyReviewDetails(model: MainActivity.Model) {
                 textStyle = TextStyle(color = MaterialTheme.colorScheme.secondary),
                 enabled = true,
                 onValueChange = {model.commentState.value = it},
-                label = { Text("Add more details on your experience...")},
+                label = { Text("Add more details on your experience...") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(Size._80.value))
@@ -95,9 +104,12 @@ fun getRatingText(nbrStars: Int): String {
 @Composable
 private fun Preview() {
     val ratingState = remember { mutableStateOf(0) }
-    MyReview(model = MyReview.Model(
-        iconRes = R.drawable.ic_user_icon,
-        ratingState = ratingState,
-        onClick = { }
-    ))
+    MyReview(
+        model = MyReview.Model(
+            iconRes = R.drawable.ic_user_icon,
+            ratingState = ratingState,
+            onClick = { }
+
+        )
+    )
 }

@@ -36,10 +36,10 @@ private fun Preview() {
             ButtonRenderable(model = ButtonRenderable.Model(
                 text = "Close",
                 color = MaterialTheme.colorScheme.background,
-                onClick = { Log.d("apa1", "clicked") } //TODO: go to prev screen
+                onClick = { }
             )),
             TextRenderable(model = TextRenderable.Model(
-                text = "Apa"
+                text = "Close"
             )),
             ButtonRenderable(model = ButtonRenderable.Model(
                 text = "Save",

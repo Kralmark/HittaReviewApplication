@@ -1,5 +1,6 @@
 package com.example.hittareviewapplication.ui.organisms
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,7 +19,8 @@ class StarButtonRow {
         val unselectedIconRes: Int,
         var rating: MutableState<Int>,
         val isSelectable: Boolean = false,
-        val arrangement: Arrangement.Horizontal = Arrangement.Start
+        val arrangement: Arrangement.Horizontal = Arrangement.Start,
+        val onClick: (value: Int) -> Unit,
     )
 }
 
@@ -44,12 +46,16 @@ fun StarButtonRow(model: StarButtonRow.Model) {
             IconButton.Model(
                 iconProps = iconProps,
                 onClick = {
-                    if(model.isSelectable) {
-                        model.rating.value = index + 1
-                        if (model.rating.value > 0) {
-                            iconProps.tintResId = getTintResourceId(
-                                isSelected = model.rating.value > index
-                            )
+                    val value = index + 1
+                    model.apply {
+                        onClick(value)
+                        if(isSelectable) {
+                            rating.value = value
+                            if (rating.value > 0) {
+                                iconProps.tintResId = getTintResourceId(
+                                    isSelected = rating.value > index
+                                )
+                            }
                         }
                     }
                 }
@@ -71,6 +77,7 @@ private fun Preview() {
     StarButtonRow(model = StarButtonRow.Model(
         selectedIconRes = R.drawable.ic_five_pointed_star_filled,
         unselectedIconRes = R.drawable.ic_five_pointed_star_filled,
-        rating = remember { mutableStateOf(0) }
+        rating = remember { mutableStateOf(0) },
+        onClick =  { },
     ))
 }

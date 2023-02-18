@@ -1,7 +1,6 @@
 package com.example.hittareviewapplication
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -15,11 +14,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
-import com.example.hittareviewapplication.api.models.ReviewDTO
 import com.example.hittareviewapplication.api.service.RetrofitServiceImpl
 import com.example.hittareviewapplication.ui.screens.NavGraphs
-import com.example.hittareviewapplication.ui.screens.ReviewsScreen
-import com.example.hittareviewapplication.ui.templates.MyReviewTemplate
 import com.example.hittareviewapplication.ui.theme.HittaReviewTheme
 import com.example.hittareviewapplication.ui.templates.ReviewsTemplate
 import com.example.hittareviewapplication.ui.tokens.Dimension
@@ -29,52 +25,65 @@ import java.util.*
 
 class MainActivity : ComponentActivity() {
 
-    data class Model(
+    data class ApplicationState(
         val ratingState: MutableState<Int>,
         val userNameState: MutableState<String>,
         val commentState: MutableState<String>,
         val timestampState: MutableState<Date>,
-        var companyName: String? = null
+        var companyNameState: MutableState<String>,
     )
 
     companion object {
+        /**
+         * Company id to get name for.
+         */
         const val id = "ctyfiintu"
+        /**
+         * Mock value for score (rating).
+         */
         const val score = 4.1f
+        /**
+         * Mock value for ratings on the company.
+         */
         const val fromRatings = "from 27 ratings"
+        /**
+         * String for a clickable string to view all reviews.
+         */
         const val link = "View all reviews"
-        var model: Model? = null
+
+        var applicationState: ApplicationState? = null
+
         @Composable
-        fun createModel(): Model {
-            if (model == null) {
-                model = Model(
+        fun getModel(): ApplicationState {
+            if (applicationState == null) {
+                applicationState = ApplicationState(
                     ratingState = remember { mutableStateOf(0) },
                     userNameState = remember { mutableStateOf("") },
                     commentState = remember { mutableStateOf("") },
-                    timestampState = remember { mutableStateOf(Date.from(Instant.now())) }
+                    timestampState = remember { mutableStateOf(Date.from(Instant.now())) },
+                    companyNameState = remember { mutableStateOf("") },
                 )
             }
-            return model!!
+            return applicationState!!
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        downloadData()
+        RetrofitServiceImpl().getCompanyName(id, { } , { })
         setContent {
+            applicationState = getModel()
             Surface(
                 modifier = Modifier
                     .wrapContentSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                model = createModel()
+                applicationState = getModel()
                 DestinationsNavHost(navGraph = NavGraphs.root)
             }
         }
     }
 
-    private fun downloadData() {
-        RetrofitServiceImpl().getCompanyName(id)
-    }
 
 }
 

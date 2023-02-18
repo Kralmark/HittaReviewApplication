@@ -45,7 +45,8 @@ fun Review(review: ReviewsTemplate.Review) {
                         iconPadding = Padding._1,
                         unselectedIconRes = R.drawable.ic_five_pointed_star_outline,
                         selectedIconRes = R.drawable.ic_five_pointed_star_filled,
-                        rating = remember { mutableStateOf(4) }
+                        rating = remember { mutableStateOf(review.score)},
+                        onClick = { },
                     )
                 )
                 /*Text(

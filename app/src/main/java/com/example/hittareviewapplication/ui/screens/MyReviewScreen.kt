@@ -39,7 +39,13 @@ fun MyReviewScreen(navigator: DestinationsNavigator?) {
         TopBar(model = createTopBarModel(navigator))
 
         // Actual review by "me"
-        MyReviewTemplate(model = MainActivity.createModel())
+        MainActivity.getModel().let { state ->
+            MyReviewTemplate(model = MyReviewTemplate.Model(
+                ratingState = state.ratingState,
+                commentState = state.commentState,
+                userNameState = state.userNameState
+            ))
+        }
 
         // Dialog that shall be visible after clicking the Save button
         dialogVisible = remember { mutableStateOf(false)}
@@ -54,8 +60,8 @@ fun postReview(success: () -> Unit, failure: () -> Unit) {
     RetrofitServiceImpl().postReview(
         review = ReviewDTO(
             companyId = MainActivity.id,
-            comment = MainActivity.model!!.commentState.value,
-            score = MainActivity.model!!.ratingState.value,
+            comment = MainActivity.applicationState!!.commentState.value,
+            score = MainActivity.applicationState!!.ratingState.value,
         ),
         success = success,
         failure = failure
@@ -75,17 +81,15 @@ private fun createTopBarModel(navigator: DestinationsNavigator?) =
         ButtonRenderable(model = ButtonRenderable.Model(
             text = "Close",
             onClick = {
-                // TODO: If it has not been saved, it should not be in the state
-                ReviewsScreen.initialized = false
                 //Set "Anonymous" if nothing in state
-                if(MainActivity.model!!.userNameState.value.isEmpty()) {
-                    MainActivity.model!!.userNameState.value = "Anonymous"
+                if(MainActivity.applicationState!!.userNameState.value.isEmpty()) {
+                    MainActivity.applicationState!!.userNameState.value = "Anonymous"
                 }
                 navigator?.navigate(ReviewsScreenDestination)
             }
         )),
         TextRenderable(model = TextRenderable.Model(
-            text = MainActivity.model?.companyName ?: ""
+            text = MainActivity.applicationState?.companyNameState!!.value
         )),
         ButtonRenderable(model = ButtonRenderable.Model(
             text = "Save",
